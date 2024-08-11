@@ -1,5 +1,7 @@
 using Application;
 using Infrastruture;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,12 @@ builder.Services.AddSwaggerGen()
     .AddApplication()
     .AddInfrastruture();
 
+builder.Host.UseSerilog((context, configuration)=>
+configuration.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
