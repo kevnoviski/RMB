@@ -1,32 +1,81 @@
 using Application.Contracts;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Services;
 
 public class GunService : IGunService
 {
-    public Task<IActionResult> Burst(int burst)
+    private static int magazineSize=30;
+    private static int clip = 30;
+    private static bool squibloaded=false;
+    private static int burstNumber=1;
+    public async Task<int> Burst(int burst)
     {
-        throw new NotImplementedException();
+        burstNumber = burst;
+        return await Task.FromResult(burstNumber == burst ? burstNumber : burst);
     }
 
-    public Task<IActionResult> Fire(int bullets)
+    public async Task<int> Fire(int bullets)
     {
-        throw new NotImplementedException();
+        if (clip==0)return -1;
+        if (!SquibLoad())
+        {
+            if (clip > 0 && bullets < clip)
+            {
+                clip = clip - bullets;
+                return await Task.FromResult(clip);
+            }
+            else if (clip > 0 && bullets > clip)
+            {
+                var bulletsFired = clip;
+                clip=0;
+                return await Task.FromResult(bulletsFired);
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        return 0;
     }
 
-    public Task<IActionResult> GetCurrentClip()
+    public async Task<int> GetCurrentClip()
     {
-        throw new NotImplementedException();
+        return await Task.FromResult(clip);
     }
 
-    public Task<IActionResult> Reload(int bullets)
+    public async Task<int> Reload(int bullets)
     {
-        throw new NotImplementedException();
+        if(( clip + bullets) > magazineSize) 
+        {
+            clip= magazineSize;
+        }
+        else
+        {
+            clip=clip + bullets;
+        }
+        return await Task.FromResult(clip);
+    }
+    private bool SquibLoad()
+    {
+        if (!squibloaded)
+        {
+            Random rnd = new Random();
+            squibloaded = rnd.Next(1, 100) % 2 == 0;
+            return squibloaded;
+        }
+        return true;
+    }
+    public async Task<bool> Unsquib()
+    {
+        squibloaded = false;
+        return await Task.FromResult(!squibloaded);
     }
 
-    public Task<IActionResult> Unsquib()
+    public async Task<int> SetMagazineSize(int size)
     {
-        throw new NotImplementedException();
+        magazineSize = size;
+        return await Task.FromResult(magazineSize);
     }
 }

@@ -4,9 +4,9 @@ namespace Application.Contracts;
 
 public interface IGunService
 {
-    Task<IActionResult> GetCurrentClip();
-    Task<IActionResult> Fire(int bullets);
-    Task<IActionResult> Reload(int bullets);
-    Task<IActionResult> Unsquib();
-    Task<IActionResult> Burst(int burst);
+    Task<int> GetCurrentClip();
+    Task<int> Fire(int bullets);
+    Task<int> Reload(int bullets);
+    Task<bool> Unsquib();
+    Task<int> SetMagazineSize(int size);
 }

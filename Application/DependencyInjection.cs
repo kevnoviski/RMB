@@ -1,3 +1,5 @@
+using Application.Contracts;
+using Application.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,8 @@ public static class DependencyInjection
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(assembly));
 
         services.AddValidatorsFromAssemblies(new[] { assembly });
+
+        services.AddScoped<IGunService,GunService>();
         return services;
     }
 }
