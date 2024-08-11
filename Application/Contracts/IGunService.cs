@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Contracts;
 
-public interface IGunController
+public interface IGunService
 {
     Task<IActionResult> GetCurrentClip();
     Task<IActionResult> Fire(int bullets);

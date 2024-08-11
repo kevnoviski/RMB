@@ -6,8 +6,10 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class GunController : ControllerBase, IGunController
 {
+    private IGunService _gunservice;
     private static int clip = 30;
     private static bool squibloaded=false;
+    private static int burstNumber=1;
     
     [HttpGet("clip")]
     [ProducesResponseType(typeof(int),200)]
@@ -21,7 +23,7 @@ public class GunController : ControllerBase, IGunController
     [HttpPost("fire")]
     [ProducesResponseType(typeof(int),201)]
     [ProducesResponseType(typeof(string),400)]
-    public async Task<IActionResult> Fire([FromBody] int bullets)
+    public async Task<IActionResult> Fire(int bullets)
     {
         if (clip > 0 && bullets < clip)
         {
@@ -73,5 +75,13 @@ public class GunController : ControllerBase, IGunController
     {
         Random rnd = new Random();
         return rnd.Next(1, 10) % 2 == 0;
+    }
+
+    [HttpPut("burst")]
+    [ProducesResponseType(typeof(int),204)]
+    public async Task<IActionResult> Burst(int burst)
+    {
+        burstNumber = burst;
+        return Ok(await  Task.FromResult(burstNumber));
     }
 }
