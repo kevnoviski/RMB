@@ -1,0 +1,12 @@
+/home/kevin/dev/RMB/Infrastruture/bin/Debug/net8.0/Infrastruture.deps.json
+/home/kevin/dev/RMB/Infrastruture/bin/Debug/net8.0/Infrastruture.dll
+/home/kevin/dev/RMB/Infrastruture/bin/Debug/net8.0/Infrastruture.pdb
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/Infrastruture.GeneratedMSBuildEditorConfig.editorconfig
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/Infrastruture.AssemblyInfoInputs.cache
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/Infrastruture.AssemblyInfo.cs
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/Infrastruture.csproj.CoreCompileInputs.cache
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/Infrastruture.dll
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/refint/Infrastruture.dll
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/Infrastruture.pdb
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/ref/Infrastruture.dll
+/home/kevin/dev/RMB/Infrastruture/obj/Debug/net8.0/Infrastruture.csproj.AssemblyReference.cache
