@@ -1,6 +1,5 @@
 using Application.Contracts;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+using Application.Responses;
 
 namespace Application.Services;
 
@@ -9,53 +8,58 @@ public class GunService : IGunService
     private static int magazineSize=30;
     private static int clip = 30;
     private static bool squibloaded=false;
-    private static int burstNumber=1;
-    public async Task<int> Burst(int burst)
+    public async Task<FireResponse> Fire()
     {
-        burstNumber = burst;
-        return await Task.FromResult(burstNumber == burst ? burstNumber : burst);
-    }
+        FireResponse response;
 
-    public async Task<int> Fire(int bullets)
-    {
-        if (clip==0)return -1;
-        if (!SquibLoad())
+        if (clip==0 || SquibLoad())
         {
-            if (clip > 0 && bullets < clip)
-            {
-                clip = clip - bullets;
-                return await Task.FromResult(clip);
-            }
-            else if (clip > 0 && bullets > clip)
-            {
-                var bulletsFired = clip;
-                clip=0;
-                return await Task.FromResult(bulletsFired);
-            }
-            else
-            {
-                return -1;
-            }
+            response=new FireResponse(
+                statusCode: 400,
+                remainingBullets: clip,
+                squibLoadOccurred: squibloaded,
+                message: clip==0 ? "Clip is empty." : "Squib load detected."
+            );
+        } 
+        else 
+        {
+            clip -=1;
+            response=new FireResponse(
+                statusCode: 200,
+                remainingBullets: clip,
+                squibLoadOccurred: squibloaded,
+                message:  "Bullet fired successfully."
+            );
         }
-        return 0;
+        return await Task.FromResult(response);
     }
 
-    public async Task<int> GetCurrentClip()
+    public async Task<ClipStatusResponse> GetCurrentClip()
     {
-        return await Task.FromResult(clip);
+        return await Task.FromResult(new ClipStatusResponse(200,clip));
     }
 
-    public async Task<int> Reload(int bullets)
+    public async Task<ReloadResponse> Reload(int bullets)
     {
+        ReloadResponse response;
         if(( clip + bullets) > magazineSize) 
         {
-            clip= magazineSize;
+            response= new ReloadResponse(
+                statusCode: 400,
+                currentClip: clip,
+                message:  "Reload amount exceeds magazine size."
+            );
         }
         else
         {
-            clip=clip + bullets;
+            clip+=bullets;
+            response= new ReloadResponse(
+                statusCode: 200,
+                currentClip: clip,
+                message:  "Gun reloaded successfully."
+            );
         }
-        return await Task.FromResult(clip);
+        return await Task.FromResult(response);
     }
     private bool SquibLoad()
     {
@@ -67,15 +71,32 @@ public class GunService : IGunService
         }
         return true;
     }
-    public async Task<bool> Unsquib()
+    public async Task<UnsquibResponse> Unsquib()
     {
-        squibloaded = false;
-        return await Task.FromResult(!squibloaded);
+        UnsquibResponse response;
+        if (squibloaded)
+        {
+            squibloaded = false;
+            response = new UnsquibResponse(
+                statusCode:200,
+                squibloaded:squibloaded,
+                message:"Squib load fixed, gun is operational."
+            );
+        }
+        else
+        {
+            response = new UnsquibResponse(
+                statusCode:400,
+                squibloaded:squibloaded,
+                message:"Gun is not in a squib load state."
+            );
+        }
+        return await Task.FromResult(response);
     }
 
-    public async Task<int> SetMagazineSize(int size)
+    public async Task<MagazineSizeResponse> SetMagazineSize(int size)
     {
         magazineSize = size;
-        return await Task.FromResult(magazineSize);
+        return await Task.FromResult(new MagazineSizeResponse(200,magazineSize));
     }
 }
