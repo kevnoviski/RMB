@@ -75,28 +75,98 @@ public class GunServiceTest
     [Fact]
     public async Task GetCurrentClip_Test()
     {
-
+        gunmock = new Gun()
+        {
+            Id=1,
+            Clip =29,
+            MagazineSize=30,
+            ModelName="XX",
+            SquibLoaded=false
+        };
+        _gunRepository.Setup(s=> s.GetGunAsync()).Returns(Task.FromResult(gunmock));
+        ClipStatusResponse  response =await gunService.GetCurrentClip();
+        Assert.True(response.StatusCode==200);
     }
 
     [Fact]
     public async Task Reload_Test_Return_OK()
     {
-        
+        gunmock = new Gun()
+        {
+            Id=1,
+            Clip =29,
+            MagazineSize=30,
+            ModelName="XX",
+            SquibLoaded=false
+        };
+        _gunRepository.Setup(s=> s.GetGunAsync()).Returns(Task.FromResult(gunmock));
+        _gunRepository.Setup(s=> s.UpdateGunAsync(It.IsAny<Gun>())).Returns(Task.FromResult(gunmock));
+        ReloadResponse response = await gunService.Reload(1);
+        Assert.True(response.StatusCode==200);
     }
     [Fact]
     public async Task Reload_Test_Return_BadRequest()
     {
-        
+        gunmock = new Gun()
+        {
+            Id=1,
+            Clip =30,
+            MagazineSize=30,
+            ModelName="XX",
+            SquibLoaded=false
+        };
+        _gunRepository.Setup(s=> s.GetGunAsync()).Returns(Task.FromResult(gunmock));
+        _gunRepository.Setup(s=> s.UpdateGunAsync(It.IsAny<Gun>())).Returns(Task.FromResult(gunmock));
+        ReloadResponse response = await gunService.Reload(1);
+        Assert.True(response.StatusCode==400);
     }
 
     [Fact]
-    public async Task Reload_Test_Unsquib_OK()
+    public async Task Unsquib_Test_OK()
     {
-        
+        gunmock = new Gun()
+        {
+            Id=1,
+            Clip =30,
+            MagazineSize=30,
+            ModelName="XX",
+            SquibLoaded=true
+        };
+        _gunRepository.Setup(s=> s.GetGunAsync()).Returns(Task.FromResult(gunmock));
+        _gunRepository.Setup(s=> s.UpdateGunAsync(It.IsAny<Gun>())).Returns(Task.FromResult(gunmock));
+        UnsquibResponse response = await gunService.Unsquib();
+        Assert.True(response.StatusCode==200);
+
     }
     [Fact]
-    public async Task Reload_Test_Unsquib_BadRequest()
+    public async Task Unsquib_Test_BadRequest()
     {
-        
+        gunmock = new Gun()
+        {
+            Id=1,
+            Clip =30,
+            MagazineSize=30,
+            ModelName="XX",
+            SquibLoaded=false
+        };
+        _gunRepository.Setup(s=> s.GetGunAsync()).Returns(Task.FromResult(gunmock));
+        UnsquibResponse response = await gunService.Unsquib();
+        Assert.True(response.StatusCode==400);
+    }
+    [Fact]
+    public async Task SetMagazineSize_Test()
+    {
+        gunmock = new Gun()
+        {
+            Id=1,
+            Clip =30,
+            MagazineSize=30,
+            ModelName="XX",
+            SquibLoaded=false
+        };
+        _gunRepository.Setup(s=> s.GetGunAsync()).Returns(Task.FromResult(gunmock));
+        _gunRepository.Setup(s=> s.UpdateGunAsync(It.IsAny<Gun>())).Returns(Task.FromResult(gunmock));
+        MagazineSizeResponse response = await gunService.SetMagazineSize(100);
+        Assert.Equal( 100,response.MagazineSize);
     }
 }
